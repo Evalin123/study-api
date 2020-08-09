@@ -6,6 +6,8 @@ const passport = require('passport');
 const keys = require('./config/keys');
 const users = require('./routes/api/users');
 const units = require('./routes/api/units');
+const quizzes = require('./routes/api/quizzes');
+const images = require('./routes/api/images');
 
 const app = express();
 const port = 5000;
@@ -32,6 +34,8 @@ app.get('/', (request, response) => {
   response.send('Welcome');
 });
 
+app.use('/uploads',express.static('uploads'));
 app.use('/study/users', users);
 app.use('/study/units', units);
-
+app.use('/study/quizzes', quizzes);
+app.use('/study/images', images);

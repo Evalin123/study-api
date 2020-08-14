@@ -2,9 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const cors = require('cors');
 
 const keys = require('./config/keys');
 const users = require('./routes/api/users');
+const subjects = require('./routes/api/subjects');
 const units = require('./routes/api/units');
 const quizzes = require('./routes/api/quizzes');
 const images = require('./routes/api/images');
@@ -12,6 +14,7 @@ const images = require('./routes/api/images');
 const app = express();
 const port = 5000;
 
+app.use(cors());
 mongoose.connect(keys.mongoUri, {
   useNewUrlParser: true
 })
@@ -36,6 +39,7 @@ app.get('/', (request, response) => {
 
 app.use('/uploads',express.static('uploads'));
 app.use('/study/users', users);
+app.use('/study/subjects', subjects);
 app.use('/study/units', units);
 app.use('/study/quizzes', quizzes);
 app.use('/study/images', images);

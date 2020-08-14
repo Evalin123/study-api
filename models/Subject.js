@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const UnitSchema = new Schema({
-  subjectId : {
+const SubjectSchema = new Schema({
+  userId : {
     type : String,
     required : true
   },
@@ -11,11 +11,7 @@ const UnitSchema = new Schema({
     type : String,
     required : true
   },
-  subtitle : {
-    type : String,
-    required : true
-  },
-  content : {
+  description : {
     type : String,
     required : true
   },
@@ -25,4 +21,4 @@ const UnitSchema = new Schema({
   },
 });
 
-module.exports = Unit = mongoose.model('units',UnitSchema);
+module.exports = Subject = mongoose.model('subjects',SubjectSchema);

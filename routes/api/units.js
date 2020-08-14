@@ -6,11 +6,10 @@ const { request, response } = require('express');
 
 const router = express.Router();
 
-router.post('/create', passport.authenticate('jwt', { session: false }), (request, response) => {
-  const currentUser = request.user;
+router.post('/create/:subjectId', passport.authenticate('jwt', { session: false }), (request, response) => {
+  const subjectId = request.params.subjectId;
   const newUnit = new Unit({
-    userId: currentUser.id,
-    subject: request.body.subject,
+    subjectId: subjectId,
     title: request.body.title,
     subtitle: request.body.subtitle,
     content: request.body.content,
@@ -40,17 +39,18 @@ router.delete('/delete/:id', passport.authenticate('jwt', { session: false }), (
     .catch(err => response.json({ status: 'error', data: err }));
 });
 
-router.get('/get/all', passport.authenticate('jwt', { session: false }), (request, response) => {
-  Unit.find({}, (err, units) => {
-    response.json(units);
-  })
-});
-
-router.get('/get/:id', passport.authenticate('jwt', { session: false }), (request, response) => {
+router.get('/id/:id', passport.authenticate('jwt', { session: false }), (request, response) => {
   const id = request.params.id;
   Unit.findById(id)
     .then(unit => response.json(unit))
     .catch(err => response.json({ status: 'error', data: err }));
-})
+});
+
+router.get('/subject/:subjectId', passport.authenticate('jwt', { session: false }), (request, response) => {
+  const subjectId = request.params.subjectId;
+  Unit.find({subjectId: subjectId}, (err, units) => {
+    response.json(units);
+  })
+});
 
 module.exports = router;

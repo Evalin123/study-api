@@ -2,6 +2,7 @@ const express = require('express');
 const passport = require('passport');
 
 const Unit = require('../../models/Unit');
+const Subject = require('../../models/Subject');
 const { request, response } = require('express');
 
 const router = express.Router();
@@ -42,15 +43,37 @@ router.delete('/delete/:id', passport.authenticate('jwt', { session: false }), (
 router.get('/id/:id', passport.authenticate('jwt', { session: false }), (request, response) => {
   const id = request.params.id;
   Unit.findById(id)
-    .then(unit => response.json(unit))
+    .then(unit => {
+      Subject.findById(unit.subjectId) 
+      .then(subject => {
+        response.json({
+          data: {
+            unit: unit,
+            subject: subject,
+          },
+          status: 'success',
+        })
+      })
+    })
     .catch(err => response.json({ status: 'error', data: err }));
 });
 
 router.get('/subject/:subjectId', passport.authenticate('jwt', { session: false }), (request, response) => {
   const subjectId = request.params.subjectId;
-  Unit.find({subjectId: subjectId}, (err, units) => {
-    response.json(units);
-  })
+  Unit.find({subjectId: subjectId})
+    .then(units => {
+      Subject.findById(subjectId) 
+      .then(subject => {
+        response.json({
+          data: {
+            units: units,
+            subject: subject,
+          },
+          status: 'success',
+        })
+      })
+    })
+    .catch(err => response.json({ status: 'error', data: err }));
 });
 
 module.exports = router;

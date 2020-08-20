@@ -13,7 +13,7 @@ router.post('/create', passport.authenticate('jwt', { session: false }), (reques
     description: request.body.description,
   });
   newSubject.save()
-    .then(unit => response.json({ data: unit, message: '已新增' }))
+    .then(subject => response.json({ data: subject, message: '已新增' }))
     .catch(err => response.json({ status: 'error', data: err }));
 })
 

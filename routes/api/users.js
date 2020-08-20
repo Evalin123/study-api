@@ -47,7 +47,8 @@ router.post('/login', (request, response) => {
               const rule = {
                 id: user.id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                identity: user.identity
               }
               jwt.sign(rule, secret, { expiresIn: 180000 }, (err, token) => {
                 response.json({

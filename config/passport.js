@@ -13,7 +13,6 @@ module.exports = (passport) => {
     User.findById(payload.id)
     .then(user => {
       if(user) {
-        console.log(user.name);
         return done(null, user);
       }
       else {

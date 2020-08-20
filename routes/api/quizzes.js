@@ -2,22 +2,27 @@ const express = require('express');
 const passport = require('passport');
 
 const Quiz = require('../../models/Quiz');
+const Subject = require('../../models/Subject');
 const { request, response } = require('express');
+const { json } = require('body-parser');
 
 const router = express.Router();
 
-router.post('/create', passport.authenticate('jwt', { session: false }), (request, response) => {
-  const currentUser = request.user;
+router.post('/create/:subjectId', passport.authenticate('jwt', { session: false }), (request, response) => {
+  const subjectId = request.params.subjectId;
   const newQuiz = new Quiz({
-    userId: currentUser.id,
-    subject: request.body.subject,
+    subjectId: subjectId,
     title: request.body.title,
     subtitle: request.body.subtitle,
     question: request.body.question,
+    choiceA: request.body.choiceA,
+    choiceB: request.body.choiceB,
+    choiceC: request.body.choiceC,
+    choiceD: request.body.choiceD,
     answer: request.body.answer,
   });
   newQuiz.save()
-    .then(unit => response.json({ data: unit, message: '已新增' }))
+    .then(quiz => response.json({ data: quiz, message: '已新增' }))
     .catch(err => response.json({ status: 'error', data: err }));
 })
 
@@ -27,6 +32,10 @@ router.post('/edit/:id', passport.authenticate('jwt', { session: false }), (requ
   opts.title = request.body.title;
   opts.subtitle = request.body.subtitle;
   opts.question = request.body.question;
+  opts.choiceA = request.body.choiceA,
+  opts.choiceB = request.body.choiceB,
+  opts.choiceC = request.body.choiceC,
+  opts.choiceD = request.body.choiceD,
   opts.answer = request.body.answer;
   Quiz.findByIdAndUpdate({ _id: id },
     { $set: opts },
@@ -42,15 +51,39 @@ router.delete('/delete/:id', passport.authenticate('jwt', { session: false }), (
     .catch(err => response.json({ status: 'error', data: err }));
 })
 
-router.get('/get/all', passport.authenticate('jwt', { session: false }), (request, response) => {
-  Quiz.find({}, (err, quiz) => {
-    response.json(quiz);
+router.get('/subject/:subjectId', passport.authenticate('jwt', { session: false }), (request, response) => {
+  const subjectId = request.params.subjectId;
+  Quiz.find({subjectId: subjectId})
+  .then(quizzes => {
+    Subject.findById(subjectId)
+    .then(subject => {
+      response.json({
+        data: {
+          subject: subject,
+          quizzes: quizzes
+        },
+        status: 'success',
+      })
+    })
   })
+  .catch(err => response.json({ status: 'error', data: err }));
 })
 
-router.get('/get/:id', passport.authenticate('jwt', { session: false }), (request, response) => {
+router.get('/id/:id', passport.authenticate('jwt', { session: false }), (request, response) => {
+  const id = request.params.id;
   Quiz.findById(id)
-    .then(unit => response.json(unit))
+    .then(quiz => {
+      Subject.findById(quiz.subjectId)
+      .then(subject => {
+        response.json({
+          data: {
+            subject: subject,
+            quiz: quiz,
+          },
+          status: 'success',
+        })
+      })
+    })
     .catch(err => response.json({ status: 'error', data: err }));
 })
 

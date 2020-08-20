@@ -3,11 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const QuizSchema = new Schema({
-  userId : {
-    type : String,
-    required : true
-  },
-  subject : {
+  subjectId : {
     type : String,
     required : true
   },
@@ -22,6 +18,20 @@ const QuizSchema = new Schema({
   question : {
     type : String,
     required : true
+  },
+  choiceA : {
+    type : String,
+    required : true
+  },
+  choiceB : {
+    type : String,
+    required : true
+  },
+  choiceC : {
+    type : String,
+  },
+  choiceD : {
+    type : String,
   },
   answer : {
     type : String,
